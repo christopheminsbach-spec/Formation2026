@@ -1,53 +1,46 @@
-import {
-  BrowserRouter,
-  Routes,
-  Route
-} from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import Home from "./pages/home";
+import MainLayout from "./layouts/MainLayout";
+
+import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
-import AnalyseAI from "./pages/AnalyseAI";
 import Applications from "./pages/Applications";
-
+import InterviewAI from "./pages/InterviewAI";
+import Matching from "./pages/ Matching";
+import Documents from "./pages/ Documents";
+import Settings from "./pages/Settings";
 
 function App() {
-
   return (
-
     <BrowserRouter>
 
-      <Routes>
+      <MainLayout>
 
-        <Route path="/" element={<Home />} />
+        <Routes>
 
-        <Route
-          path="/dashboard"
-          element={<Dashboard />}
-        />
+          <Route path="/" element={<Home />} />
 
-        <Route
-          path="/profil"
-          element={<Profile />}
-        />
+          <Route path="/dashboard" element={<Dashboard />} />
 
-        <Route
-          path="/analyse"
-          element={<AnalyseAI />}
-        />
+          <Route path="/profil" element={<Profile />} />
 
-        <Route
-          path="/applications"
-          element={<Applications />}
-        />
+          <Route path="/applications" element={<Applications />} />
 
-      </Routes>
+          <Route path="/interview" element={<InterviewAI />} />
+
+          <Route path="/matching" element={<Matching />} />
+
+          <Route path="/documents" element={<Documents />} />
+
+          <Route path="/settings" element={<Settings />} />
+
+        </Routes>
+
+      </MainLayout>
 
     </BrowserRouter>
-
   );
-
 }
-
 
 export default App;

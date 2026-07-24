@@ -1,51 +1,118 @@
-import { Link } from "react-router-dom";
+import "./Navbar.css";
 
 
 export default function Navbar(){
 
-return (
 
-<nav className="navbar">
+    return (
 
-
-<h2>
-🚀 CareerAI Assistant
-</h2>
+        <header className="navbar">
 
 
-<div className="menu">
+            {/* Partie gauche */}
+
+            <div className="navbar-left">
 
 
-<Link to="/">
-🏠 Accueil
-</Link>
+                <h1>
+
+                    🚀 CareerAI Assistant
+
+                </h1>
 
 
-<Link to="/dashboard">
-📊 Dashboard
-</Link>
+            </div>
 
 
-<Link to="/profil">
-👤 Profil
-</Link>
+
+            {/* Recherche */}
+
+            <div className="navbar-search">
 
 
-<Link to="/analyse">
-🤖 Analyse IA
-</Link>
+                <input
+
+                    type="text"
+
+                    placeholder="Rechercher une candidature, une compétence..."
+
+                />
 
 
-<Link to="/applications">
-📁 Candidatures
-</Link>
+            </div>
 
 
-</div>
 
 
-</nav>
+            {/* Partie droite */}
 
-);
+            <div className="navbar-right">
+
+
+
+                <button className="icon-button">
+
+
+                    🔔
+
+
+                </button>
+
+
+
+
+                <button className="icon-button">
+
+
+                    🌙
+
+
+                </button>
+
+
+
+
+
+                <div className="user-profile">
+
+
+                    <div className="avatar">
+
+                        CM
+
+                    </div>
+
+
+                    <div>
+
+
+                        <strong>
+
+                            Christophe
+
+                        </strong>
+
+
+                        <span>
+
+                            CDA IA 2026
+
+                        </span>
+
+
+                    </div>
+
+
+                </div>
+
+
+
+            </div>
+
+
+
+        </header>
+
+    );
 
 }

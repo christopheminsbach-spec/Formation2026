@@ -1,11 +1,22 @@
-from flask import Blueprint
+from flask import Blueprint, jsonify
+from sqlalchemy import select
+
+from database import db, Courses
 
 course_bp = Blueprint("courses", __name__)
 
 # GET /courses
 @course_bp.get("/courses")
 def get_courses():
-    pass
+
+    statement = select(Courses)
+
+    courses = db.session.scalars(statement).all()
+
+    return jsonify([
+        course.to_dict()
+        for course in courses
+    ])
 
 
 # GET /courses/<id>

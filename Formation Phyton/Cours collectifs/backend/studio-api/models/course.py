@@ -20,7 +20,7 @@ if TYPE_CHECKING:
 
 
 # Modèle Course représentant la table "courses"
-class Course(db.Model):
+class Courses(db.Model):
 
     # Nom de la table dans la base de données
     __tablename__ = "courses"

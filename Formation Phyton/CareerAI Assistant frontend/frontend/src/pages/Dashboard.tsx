@@ -1,9 +1,16 @@
+
+import Navbar from "../components/Navbar";
+
+
 export default function Dashboard(){
 
 return (
 
-<div className="container">
+<div>
 
+<Navbar />
+
+<div className="container">
 
 <h1>
 📊 Dashboard CareerAI
@@ -37,8 +44,7 @@ Optimisation des candidatures avec IA
 </div>
 
 
-</div>
-
-)
-
+      </div>
+    </div>
+  );
 }

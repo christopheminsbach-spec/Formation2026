@@ -1,9 +1,15 @@
+import Navbar from "../components/Navbar";
+
+
 export default function Profile(){
 
 return (
 
-<div className="container">
+<div>
 
+<Navbar />
+
+<div className="container">
 
 <h1>
 👤 Profil professionnel
@@ -57,6 +63,7 @@ Compétences
 </ul>
 
 
+</div>
 </div>
 
 )

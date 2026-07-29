@@ -1,14 +1,17 @@
+
 from flask import Flask
 from flask_cors import CORS
 
 from app.config import Config
 from app.extensions import bcrypt, db, jwt, migrate
+from app.routes.dashboard import dashboard_bp
 
 
 def create_app():
     app = Flask(__name__)
 
     app.config.from_object(Config)
+    app.register_blueprint(dashboard_bp)
 
     db.init_app(app)
     migrate.init_app(app, db)
@@ -19,7 +22,10 @@ def create_app():
         app,
         resources={
             r"/api/*": {
-                "origins": "http://localhost:5173"
+                "origins": [
+                    "http://localhost:5173",
+                    "http://127.0.0.1:5173",
+                ]
             }
         },
         supports_credentials=True,
@@ -36,8 +42,16 @@ def create_app():
     from app.models.matching import Matching
     from app.models.skill import Skill
 
+    # Import indispensable de la table d'association
+    from app.models.job_offer_skill import job_offer_skill
+
     # Routes
     from app.routes.auth import auth_bp
-    app.register_blueprint(auth_bp, url_prefix="/api/auth")
+
+    app.register_blueprint(
+        auth_bp,
+        url_prefix="/api/auth",
+    )
 
     return app
+

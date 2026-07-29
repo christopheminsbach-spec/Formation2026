@@ -1,6 +1,8 @@
-from sqlalchemy import Table, Column, ForeignKey
+
+from sqlalchemy import Column, ForeignKey, Table
 
 from app.extensions import db
+
 
 job_offer_skill = Table(
     "job_offer_skill",
@@ -8,13 +10,20 @@ job_offer_skill = Table(
 
     Column(
         "job_offer_id",
-        ForeignKey("job_offers.id", ondelete="CASCADE"),
+        ForeignKey(
+            "job_offers.id",
+            ondelete="CASCADE",
+        ),
         primary_key=True,
     ),
 
     Column(
         "skill_id",
-        ForeignKey("skills.id", ondelete="CASCADE"),
+        ForeignKey(
+            "skills.id",
+            ondelete="CASCADE",
+        ),
         primary_key=True,
     ),
 )
+

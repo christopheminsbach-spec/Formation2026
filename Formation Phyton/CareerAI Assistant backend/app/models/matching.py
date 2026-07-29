@@ -76,12 +76,13 @@ class Matching(db.Model):
 
 
     user: Mapped["User"] = relationship(
-        back_populates="matchings"
+    "User",
+    back_populates="matchings",
     )
 
-
     job_offer: Mapped["JobOffer"] = relationship(
-        back_populates="matchings"
+    "JobOffer",
+    back_populates="matchings",
     )
 
 

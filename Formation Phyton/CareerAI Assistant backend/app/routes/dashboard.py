@@ -1,28 +1,19 @@
 from flask import Blueprint, jsonify
-from flask_jwt_extended import jwt_required, get_jwt_identity
-
+from flask_jwt_extended import get_jwt_identity, jwt_required
 
 dashboard_bp = Blueprint(
     "dashboard",
     __name__,
-    url_prefix="/api/dashboard"
+    url_prefix="/api/dashboard",
 )
 
 
 @dashboard_bp.get("/")
 @jwt_required()
 def dashboard():
-
     user_id = get_jwt_identity()
 
     return jsonify({
-        "success": True,
-        "message": "Dashboard connecté au backend",
+        "message": "Dashboard accessible",
         "user_id": user_id,
-        "stats": {
-            "applications": 12,
-            "interviews": 4,
-            "documents": 8,
-            "matches": 17,
-        }
     }), 200

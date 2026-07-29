@@ -1,8 +1,18 @@
+
 from datetime import datetime
+from typing import TYPE_CHECKING
 
 from app.extensions import db
 from sqlalchemy import Boolean, DateTime, String
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+
+if TYPE_CHECKING:
+    from app.models.application import Application
+    from app.models.document import Document
+    from app.models.interview import Interview
+    from app.models.matching import Matching
+    from app.models.profile import Profile
 
 
 class User(db.Model):
@@ -51,3 +61,61 @@ class User(db.Model):
         nullable=False,
         default=datetime.utcnow,
     )
+
+    # ─────────────────────────────────────────────
+    # Profil utilisateur
+    # ─────────────────────────────────────────────
+
+    profile: Mapped["Profile | None"] = relationship(
+        "Profile",
+        back_populates="user",
+        uselist=False,
+        cascade="all, delete-orphan",
+    )
+
+    # ─────────────────────────────────────────────
+    # Candidatures
+    # ─────────────────────────────────────────────
+
+    applications: Mapped[list["Application"]] = relationship(
+        "Application",
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
+
+    # ─────────────────────────────────────────────
+    # Documents
+    # ─────────────────────────────────────────────
+
+    documents: Mapped[list["Document"]] = relationship(
+        "Document",
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
+
+    # ─────────────────────────────────────────────
+    # Entretiens IA
+    # ─────────────────────────────────────────────
+
+    interviews: Mapped[list["Interview"]] = relationship(
+        "Interview",
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
+
+    # ─────────────────────────────────────────────
+    # Matching IA
+    # ─────────────────────────────────────────────
+
+    matchings: Mapped[list["Matching"]] = relationship(
+        "Matching",
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
+
+    def __repr__(self) -> str:
+        return (
+            f"<User id={self.id} "
+            f"email='{self.email}'>"
+        )
+

@@ -81,7 +81,8 @@ class Interview(db.Model):
 
 
     user: Mapped["User"] = relationship(
-        back_populates="interviews"
+    "User",
+    back_populates="interviews",
     )
 
 

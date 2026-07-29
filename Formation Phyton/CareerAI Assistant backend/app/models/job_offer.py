@@ -1,16 +1,23 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
-from app.extensions import db
-from sqlalchemy import String, ForeignKey
+
+from datetime import datetime
+
+from sqlalchemy import ForeignKey, String, Text, DateTime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from app.extensions import db
+
+
+if TYPE_CHECKING:
+    from app.models.application import Application
+    from app.models.company import Company
+    from app.models.matching import Matching
+    from app.models.skill import Skill
+
+
 class JobOffer(db.Model):
-    if TYPE_CHECKING:
-     from app.models.company import Company
-     from app.models.document import Document
-     from app.models.application import Application
-     from app.models.matching import Matching
-     from app.models.Skill import Skill
-     from app.models.user import User
 
     __tablename__ = "job_offers"
 
@@ -21,15 +28,20 @@ class JobOffer(db.Model):
 
 
     title: Mapped[str] = mapped_column(
-        String(150)
+        String(150),
+        nullable=False
     )
 
 
-    description: Mapped[str]
+    description: Mapped[str] = mapped_column(
+        Text,
+        nullable=False
+    )
 
 
     company_id: Mapped[int] = mapped_column(
-        ForeignKey("companies.id")
+        ForeignKey("companies.id"),
+        nullable=False
     )
 
 
@@ -39,8 +51,8 @@ class JobOffer(db.Model):
 
 
     applications: Mapped[list["Application"]] = relationship(
-    back_populates="job_offer",
-    cascade="all, delete-orphan"
+        back_populates="job_offer",
+        cascade="all, delete-orphan"
     )
 
 
@@ -48,3 +60,22 @@ class JobOffer(db.Model):
         back_populates="job_offer",
         cascade="all, delete-orphan"
     )
+
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        nullable=False,
+        default=datetime.utcnow
+    )
+
+    skills: Mapped[list["Skill"]] = relationship(
+    secondary="job_offer_skill",
+    back_populates="job_offers"
+    )
+
+
+    def __repr__(self) -> str:
+        return (
+            f"<JobOffer id={self.id} "
+            f"title='{self.title}'>"
+        )

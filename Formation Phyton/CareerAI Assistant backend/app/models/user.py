@@ -1,43 +1,53 @@
-from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import String
-from typing import TYPE_CHECKING
+from datetime import datetime
 
 from app.extensions import db
-
-if TYPE_CHECKING:
-    from app.models.profile import Profile
+from sqlalchemy import Boolean, DateTime, String
+from sqlalchemy.orm import Mapped, mapped_column
 
 
 class User(db.Model):
-
     __tablename__ = "users"
-
 
     id: Mapped[int] = mapped_column(
         primary_key=True
     )
 
-
     email: Mapped[str] = mapped_column(
-        String(120),
+        String(255),
         unique=True,
-        nullable=False
+        nullable=False,
+        index=True,
     )
-
 
     password_hash: Mapped[str] = mapped_column(
-        nullable=False
+        String(255),
+        nullable=False,
     )
 
+    first_name: Mapped[str] = mapped_column(
+        String(100),
+        nullable=False,
+    )
+
+    last_name: Mapped[str] = mapped_column(
+        String(100),
+        nullable=False,
+    )
 
     role: Mapped[str] = mapped_column(
-        String(30),
-        default="USER"
+        String(50),
+        nullable=False,
+        default="user",
     )
 
+    is_active: Mapped[bool] = mapped_column(
+        Boolean,
+        nullable=False,
+        default=True,
+    )
 
-    profile: Mapped["Profile"] = relationship(
-        back_populates="user",
-        cascade="all, delete-orphan",
-        uselist=False
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        nullable=False,
+        default=datetime.utcnow,
     )

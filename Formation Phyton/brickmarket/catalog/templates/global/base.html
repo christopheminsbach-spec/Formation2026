@@ -1,0 +1,20 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+<title>{{ page_title }}</title>
+
+
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+
+<link rel="stylesheet" href="{% static 'css/navbar.css' %}">
+
+
+{% block css %}
+{% endblock %}
+
+
+</head>

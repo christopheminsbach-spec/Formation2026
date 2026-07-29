@@ -1,32 +1,15 @@
-from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import String, Table, Column, ForeignKey
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
+
+from sqlalchemy import String
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.extensions import db
 
+
 if TYPE_CHECKING:
-    from app.models.profile import Profile
-
-
-profile_skills = Table(
-
-    "profile_skills",
-
-    db.metadata,
-
-    Column(
-        "profile_id",
-        ForeignKey("profiles.id"),
-        primary_key=True
-    ),
-
-    Column(
-        "skill_id",
-        ForeignKey("skills.id"),
-        primary_key=True
-    )
-)
-
+    from app.models.job_offer import JobOffer
 
 
 class Skill(db.Model):
@@ -42,11 +25,25 @@ class Skill(db.Model):
     name: Mapped[str] = mapped_column(
         String(100),
         unique=True,
-        nullable=False
+        nullable=False,
+        index=True
     )
 
 
-    profiles: Mapped[list["Profile"]] = relationship(
-        secondary=profile_skills,
+    category: Mapped[str | None] = mapped_column(
+        String(100),
+        nullable=True
+    )
+
+
+    job_offers: Mapped[list["JobOffer"]] = relationship(
+        secondary="job_offer_skill",
         back_populates="skills"
     )
+
+
+    def __repr__(self) -> str:
+        return (
+            f"<Skill id={self.id} "
+            f"name='{self.name}'>"
+        )

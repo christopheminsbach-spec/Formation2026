@@ -1,0 +1,169 @@
+{% load static %}
+
+
+<nav class="navbar">
+
+
+    <!-- LOGO -->
+
+    <div class="navbar-logo">
+
+        <a href="{% url 'home' %}">
+
+            <span class="logo-icon">
+                🧱
+            </span>
+
+            <span class="logo-text">
+                Brick<span>Market</span>
+            </span>
+
+        </a>
+
+    </div>
+
+
+
+
+    <!-- MENU -->
+
+    <ul class="navbar-menu">
+
+
+        <li>
+            <a href="{% url 'home' %}">
+                Accueil
+            </a>
+        </li>
+
+
+
+        <li class="dropdown">
+
+
+            <a href="#">
+                Collections
+                <span>⌄</span>
+            </a>
+
+
+
+            <div class="dropdown-content">
+
+
+                <a href="#">
+                    ⭐ Star Wars
+                </a>
+
+
+                <a href="#">
+                    🚗 Technic
+                </a>
+
+
+                <a href="#">
+                    🏙 City
+                </a>
+
+
+                <a href="#">
+                    🧙 Harry Potter
+                </a>
+
+
+                <a href="#">
+                    🦸 Marvel
+                </a>
+
+
+            </div>
+
+
+        </li>
+
+
+
+
+        <li>
+            <a href="#">
+                Promotions
+            </a>
+        </li>
+
+
+        <li>
+            <a href="#">
+                Nouveautés
+            </a>
+        </li>
+
+
+    </ul>
+
+
+
+
+
+
+    <!-- RECHERCHE -->
+
+    <div class="search-container">
+
+
+        <input 
+            type="text"
+            placeholder="Rechercher un LEGO..."
+        >
+
+
+        <button>
+            🔍
+        </button>
+
+
+    </div>
+
+
+
+
+
+
+    <!-- ACTIONS -->
+
+
+    <div class="navbar-actions">
+
+
+        <a href="#" class="cart-btn">
+
+
+            🛒
+
+
+            <span>
+                0
+            </span>
+
+
+        </a>
+
+
+
+
+        <a href="#" class="account-btn">
+
+            👤
+
+            <span>
+                Compte
+            </span>
+
+        </a>
+
+
+    </div>
+
+
+
+
+</nav>

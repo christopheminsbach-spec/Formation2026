@@ -1,171 +1,190 @@
 import {
     useEffect,
-    useState
+    useState,
 } from "react";
 
+import api from "../api/axios";
 
 import {
-    getDashboard
-} from "../services/dashboardService";
+    useAuth,
+} from "../context/AuthContext";
 
 
-import type {
-    Dashboard
-} from "../types/dashboard";
+interface DashboardData {
+
+    applications: number;
+
+    interviews: number;
+
+    skills: number;
+
+    matches: number;
+}
 
 
+export default function Dashboard() {
 
-export default function DashboardPage(){
-
-
-const [data,setData]=useState<Dashboard|null>(null);
-
-
-
-useEffect(()=>{
+    const {
+        user,
+        logout,
+    } = useAuth();
 
 
-    getDashboard()
-
-    .then(
-        result=>setData(result)
-    )
-
-    .catch(
-        error=>console.error(error)
+    const [
+        data,
+        setData
+    ] = useState<DashboardData | null>(
+        null
     );
 
 
-},[]);
+    const [
+        error,
+        setError
+    ] = useState("");
 
 
+    useEffect(() => {
 
-if(!data){
+        api.get(
+            "/api/dashboard/"
+        )
 
-return (
+        .then((response) => {
 
-<div>
+            setData(
+                response.data
+            );
 
-Chargement Dashboard...
+        })
 
-</div>
+        .catch((error) => {
 
-)
+            console.error(error);
 
-}
+            setError(
+                "Impossible de charger le Dashboard."
+            );
 
+        });
 
+    }, []);
 
-return (
 
-<div className="dashboard">
+    if (error) {
 
+        return (
+            <div>
 
-<h1>
+                <p>{error}</p>
 
-Bonjour {data.profile.firstname}
+                <button onClick={logout}>
+                    Déconnexion
+                </button>
 
-</h1>
+            </div>
+        );
+    }
 
 
+    if (!data) {
 
-<div className="cards">
+        return (
+            <div className="loading-screen">
+                Chargement Dashboard...
+            </div>
+        );
+    }
 
 
-<div>
+    return (
 
-<h3>
-Compétences
-</h3>
+        <main className="dashboard">
 
-<p>
-{data.statistics.skills}
-</p>
+            <header className="dashboard-header">
 
-</div>
+                <div>
 
+                    <span>
+                        CareerAI Assistant
+                    </span>
 
+                    <h1>
+                        Bonjour {user?.first_name} 👋
+                    </h1>
 
-<div>
+                    <p>
+                        Votre espace professionnel
+                        CDA IA
+                    </p>
 
-<h3>
-Candidatures
-</h3>
+                </div>
 
-<p>
-{data.statistics.applications}
-</p>
 
-</div>
+                <button
+                    onClick={logout}
+                >
+                    Déconnexion
+                </button>
 
+            </header>
 
 
-<div>
+            <section className="dashboard-grid">
 
-<h3>
-Entretiens
-</h3>
+                <article className="dashboard-card">
 
-<p>
-{data.statistics.interviews}
-</p>
+                    <span>
+                        Candidatures
+                    </span>
 
-</div>
+                    <strong>
+                        {data.applications}
+                    </strong>
 
+                </article>
 
 
-<div>
+                <article className="dashboard-card">
 
-<h3>
-Documents
-</h3>
+                    <span>
+                        Entretiens
+                    </span>
 
-<p>
-{data.statistics.documents}
-</p>
+                    <strong>
+                        {data.interviews}
+                    </strong>
 
-</div>
+                </article>
 
 
-</div>
+                <article className="dashboard-card">
 
+                    <span>
+                        Compétences
+                    </span>
 
-<h2>
-Matching IA
-</h2>
+                    <strong>
+                        {data.skills}
+                    </strong>
 
+                </article>
 
-{
-data.matching.map(
-(match)=>(
-<div key={match.job_offer_id}>
 
+                <article className="dashboard-card">
 
-Score IA :
+                    <span>
+                        Matching IA
+                    </span>
 
-<strong>
-{match.score} %
-</strong>
+                    <strong>
+                        {data.matches}
+                    </strong>
 
+                </article>
 
-<p>
+            </section>
 
-{match.analysis}
-
-</p>
-
-
-</div>
-)
-
-)
-
-}
-
-
-</div>
-
-);
-
-
+        </main>
+    );
 }

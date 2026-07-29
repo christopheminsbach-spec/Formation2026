@@ -1,29 +1,37 @@
-from flask import Blueprint,jsonify
-
-from flask_jwt_extended import jwt_required,get_jwt_identity
-
-from app.models.user import User
+from app.extensions import db
 
 
+class User(db.Model):
 
-users_bp=Blueprint(
-    "users",
-    __name__
-)
+    __tablename__="users"
 
 
-
-@users_bp.get("/profile")
-@jwt_required()
-def profile():
-
-
-    user_id=get_jwt_identity()
+    id=db.Column(
+        db.Integer,
+        primary_key=True
+    )
 
 
-    user=User.query.get(user_id)
+    firstname=db.Column(
+        db.String(100),
+        nullable=False
+    )
 
 
-    return jsonify(
-        user.to_dict()
+    lastname=db.Column(
+        db.String(100),
+        nullable=False
+    )
+
+
+    email=db.Column(
+        db.String(150),
+        unique=True,
+        nullable=False
+    )
+
+
+    password=db.Column(
+        db.String(255),
+        nullable=False
     )

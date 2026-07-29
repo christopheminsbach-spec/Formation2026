@@ -1,0 +1,57 @@
+.product-container {
+
+    padding: 50px;
+
+}
+
+
+.product-card {
+
+    display:flex;
+
+    gap:40px;
+
+    background:white;
+
+    padding:40px;
+
+    border-radius:20px;
+
+    box-shadow:0 15px 30px rgba(0,0,0,.15);
+
+}
+
+
+.product-image img {
+
+    max-width:400px;
+
+    border-radius:20px;
+
+}
+
+
+.price {
+
+    font-size:2rem;
+
+    color:#E3000B;
+
+    font-weight:bold;
+
+}
+
+
+.btn-cart {
+
+    background:#FFD500;
+
+    border:none;
+
+    padding:15px 30px;
+
+    border-radius:30px;
+
+    cursor:pointer;
+
+}

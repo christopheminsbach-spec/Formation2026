@@ -7,6 +7,7 @@ import {
 
 
 import Login from "./pages/Login";
+import Register from "./pages/register";
 import Dashboard from "./pages/Dashboard";
 
 
@@ -99,6 +100,21 @@ function App() {
           element={
 
             <Login />
+
+          }
+
+        />
+
+
+        {/* Authentification */}
+
+        <Route
+
+          path="/register"
+
+          element={
+
+            <Register />
 
           }
 

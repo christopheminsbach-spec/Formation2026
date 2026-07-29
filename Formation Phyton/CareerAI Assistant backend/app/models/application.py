@@ -1,12 +1,18 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
+
+from datetime import datetime
+
+from sqlalchemy import ForeignKey, String, Text, DateTime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import ForeignKey, String
 
 from app.extensions import db
 
+
 if TYPE_CHECKING:
-     from app.models.job_offer import JobOffer
-     from app.models.profile import Profile
+    from app.models.user import User
+    from app.models.job_offer import JobOffer
 
 
 class Application(db.Model):
@@ -19,23 +25,39 @@ class Application(db.Model):
     )
 
 
-    status: Mapped[str] = mapped_column(
-        String(50),
-        default="ENVOYEE"
-    )
-
-
-    profile_id: Mapped[int] = mapped_column(
-        ForeignKey("profiles.id")
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id"),
+        nullable=False
     )
 
 
     job_offer_id: Mapped[int] = mapped_column(
-        ForeignKey("job_offers.id")
+        ForeignKey("job_offers.id"),
+        nullable=False
     )
 
 
-    profile: Mapped["Profile"] = relationship(
+    status: Mapped[str] = mapped_column(
+        String(50),
+        default="pending",
+        nullable=False
+    )
+
+
+    message: Mapped[str | None] = mapped_column(
+        Text,
+        nullable=True
+    )
+
+
+    applied_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        default=datetime.utcnow,
+        nullable=False
+    )
+
+
+    user: Mapped["User"] = relationship(
         back_populates="applications"
     )
 
@@ -43,3 +65,11 @@ class Application(db.Model):
     job_offer: Mapped["JobOffer"] = relationship(
         back_populates="applications"
     )
+
+
+    def __repr__(self) -> str:
+
+        return (
+            f"<Application id={self.id} "
+            f"status='{self.status}'>"
+        )

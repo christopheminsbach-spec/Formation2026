@@ -1,0 +1,53 @@
+{% extends "global/base.html" %}
+
+{% load static %}
+
+
+{% block css %}
+
+<link rel="stylesheet" href="{% static 'css/product.css' %}">
+
+{% endblock %}
+
+
+
+{% block content %}
+
+
+<div class="product-container">
+
+
+<h1>Fiche produit</h1>
+
+
+<p>
+Bienvenue {{ user_name|upper }}
+</p>
+
+
+<h2>
+{{ product.name }}
+</h2>
+
+
+<img 
+src="{{ product.image }}"
+width="300"
+alt="{{ product.name }}"
+>
+
+
+<p>
+{{ product.description }}
+</p>
+
+
+<p class="price">
+Prix : {{ product.price }} €
+</p>
+
+
+</div>
+
+
+{% endblock %}

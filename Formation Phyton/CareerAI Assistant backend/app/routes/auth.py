@@ -1,158 +1,125 @@
+
 from flask import Blueprint, jsonify, request
+from flask_jwt_extended import create_access_token
 
 from app.extensions import db, bcrypt
-
 from app.models.user import User
-
-from flask_jwt_extended import (
-    create_access_token,
-    jwt_required,
-    get_jwt_identity
-)
-
 
 
 auth_bp = Blueprint(
     "auth",
-    __name__
+    __name__,
+    url_prefix="/api/auth"
 )
 
 
-
-# =====================
-# INSCRIPTION
-# =====================
+# ============================================================
+# REGISTER
+# ============================================================
 
 @auth_bp.post("/register")
 def register():
 
+    data = request.get_json() or {}
 
-    data=request.json
+    firstname = data.get("firstname")
+    lastname = data.get("lastname")
+    email = data.get("email")
+    password = data.get("password")
 
+    # Validation
+    if not firstname or not lastname or not email or not password:
+        return jsonify({
+            "message": "Tous les champs sont obligatoires"
+        }), 400
 
+    # Vérification email
     existing_user = User.query.filter_by(
-        email=data["email"]
+        email=email
     ).first()
 
-
     if existing_user:
-
         return jsonify({
+            "message": "Cette adresse email existe déjà"
+        }), 409
 
-            "message":"Email déjà utilisé"
-
-        }),409
-
-
-
-    hashed_password = bcrypt.generate_password_hash(
-        data["password"]
+    # Hash du mot de passe
+    password_hash = bcrypt.generate_password_hash(
+        password
     ).decode("utf-8")
 
-
-
+    # Création utilisateur
     user = User(
-
-        firstname=data["firstname"],
-
-        lastname=data["lastname"],
-
-        email=data["email"],
-
-        password=hashed_password
-
+        firstname=firstname,
+        lastname=lastname,
+        email=email,
+        password_hash=password_hash
     )
 
-
     db.session.add(user)
-
     db.session.commit()
 
-
-
     return jsonify({
+        "message": "Utilisateur créé avec succès",
+        "user": {
+            "id": user.id,
+            "firstname": user.firstname,
+            "lastname": user.lastname,
+            "email": user.email
+        }
+    }), 201
 
-        "message":"Utilisateur créé"
 
-    }),201
-
-
-
-
-# =====================
+# ============================================================
 # LOGIN
-# =====================
+# ============================================================
 
 @auth_bp.post("/login")
 def login():
 
+    data = request.get_json() or {}
 
-    data=request.json
+    email = data.get("email")
+    password = data.get("password")
 
+    # Validation
+    if not email or not password:
+        return jsonify({
+            "message": "Email et mot de passe obligatoires"
+        }), 400
 
+    # Recherche utilisateur
     user = User.query.filter_by(
-        email=data["email"]
+        email=email
     ).first()
 
-
-
     if not user:
-
         return jsonify({
+            "message": "Email ou mot de passe incorrect"
+        }), 401
 
-            "message":"Utilisateur introuvable"
-
-        }),404
-
-
-
+    # Vérification mot de passe
     if not bcrypt.check_password_hash(
-        user.password,
-        data["password"]
+        user.password_hash,
+        password
     ):
-
         return jsonify({
+            "message": "Email ou mot de passe incorrect"
+        }), 401
 
-            "message":"Mot de passe incorrect"
-
-        }),401
-
-
-
-    token=create_access_token(
+    # Création JWT
+    access_token = create_access_token(
         identity=str(user.id)
     )
 
-
     return jsonify({
+        "message": "Connexion réussie",
+        "access_token": access_token,
+        "user": {
+            "id": user.id,
+            "firstname": user.firstname,
+            "lastname": user.lastname,
+            "email": user.email
+        }
+    }), 200
 
-        "token":token,
-
-        "user":user.to_dict()
-
-    })
-
-
-
-
-
-# =====================
-# PROFIL CONNECTE
-# =====================
-
-@auth_bp.get("/me")
-@jwt_required()
-def me():
-
-
-    user_id=get_jwt_identity()
-
-
-
-    user=User.query.get(user_id)
-
-
-
-    return jsonify(
-        user.to_dict()
-    )

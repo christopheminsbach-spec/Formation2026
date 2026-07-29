@@ -1,26 +1,26 @@
-import api from "./api";
+import axios from "axios";
 
+const API_URL = "http://127.0.0.1:5000/api";
 
-interface LoginData {
-
-    email:string;
-
-    password:string;
-
-}
-
-
-export async function login(
-    data:LoginData
-){
-
-    const response =
-    await api.post(
-        "/auth/login",
-        data
+const authService = {
+  register: async (data: {
+    first_name: string;
+    last_name: string;
+    email: string;
+    password: string;
+  }) => {
+    const response = await axios.post(
+      `${API_URL}/auth/register`,
+      data,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
     );
 
-
     return response.data;
+  },
+};
 
-}
+export default authService;

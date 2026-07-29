@@ -1,6 +1,6 @@
 import { useState, ChangeEvent, FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import authService from "../services/authService";
+import * as authService from "../services/authService";
 // @ts-ignore
 import "../styles/Auth.css";
 
@@ -66,7 +66,7 @@ const Register = () => {
         try {
             setLoading(true);
 
-            await authService.register({
+            await (authService as any).register({
                 firstname: formData.firstname,
                 lastname: formData.lastname,
                 email: formData.email,

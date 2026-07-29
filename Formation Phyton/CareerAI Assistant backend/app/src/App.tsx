@@ -1,246 +1,48 @@
 import {
-  BrowserRouter,
-  Routes,
-  Route,
-  Navigate
+BrowserRouter,
+Routes,
+Route,
+Navigate,
 } from "react-router-dom";
 
-
 import Login from "./pages/Login";
-import Register from "./pages/register";
+import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 
-
-// Pages futures
-// import Profile from "./pages/Profile";
-// import Jobs from "./pages/Jobs";
-// import AdminDashboard from "./pages/admin/AdminDashboard";
-
-
-
-function ProtectedRoute(
-  {
-    children
-  }: 
-  {
-    children: React.ReactNode
-  }
-) {
-
-
-  const token =
-    localStorage.getItem(
-      "access_token"
-    );
-
-
-  if (!token) {
-
-    return (
-
-      <Navigate
-
-        to="/login"
-
-        replace
-
-      />
-
-    );
-
-  }
-
-
-  return children;
-
-}
-
-
-
-
 function App() {
-
-
-  return (
-
-    <BrowserRouter>
-
-
-      <Routes>
-
-
-        {/* Route racine */}
-
-        <Route
-
-          path="/"
-
-          element={
-
-            <Navigate
-
-              to="/dashboard"
-
-              replace
-
-            />
-
-          }
-
-        />
-
-
-
-        {/* Authentification */}
-
-        <Route
-
-          path="/login"
-
-          element={
-
-            <Login />
-
-          }
-
-        />
-
-
-        {/* Authentification */}
-
-        <Route
-
-          path="/register"
-
-          element={
-
-            <Register />
-
-          }
-
-        />
-
-
-
-        {/* Dashboard sécurisé JWT */}
-
-        <Route
-
-          path="/dashboard"
-
-          element={
-
-
-            <ProtectedRoute>
-
-
-              <Dashboard />
-
-
-            </ProtectedRoute>
-
-
-          }
-
-        />
-
-
-
-        {/* Profil candidat futur */}
-
-        {/*
-        <Route
-
-          path="/profile"
-
-          element={
-
-            <ProtectedRoute>
-
-              <Profile />
-
-            </ProtectedRoute>
-
-          }
-
-        />
-        */}
-
-
-
-        {/* Offres emploi futur */}
-
-        {/*
-        <Route
-
-          path="/jobs"
-
-          element={
-
-            <ProtectedRoute>
-
-              <Jobs />
-
-            </ProtectedRoute>
-
-          }
-
-        />
-        */}
-
-
-
-        {/* Administration futur */}
-
-        {/*
-        <Route
-
-          path="/admin"
-
-          element={
-
-            <ProtectedRoute>
-
-              <AdminDashboard />
-
-            </ProtectedRoute>
-
-          }
-
-        />
-        */}
-
-
-
-        {/* Toute URL inconnue */}
-
-        <Route
-
-          path="*"
-
-          element={
-
-            <Navigate
-
-              to="/dashboard"
-
-              replace
-
-            />
-
-          }
-
-        />
-
-
-      </Routes>
-
-
-    </BrowserRouter>
-
-  );
-
+return ( <BrowserRouter> <Routes>
+
+```
+    <Route
+      path="/"
+      element={<Navigate to="/login" replace />}
+    />
+
+    <Route
+      path="/login"
+      element={<Login />}
+    />
+
+    <Route
+      path="/register"
+      element={<Register />}
+    />
+
+    <Route
+      path="/dashboard"
+      element={<Dashboard />}
+    />
+
+    <Route
+      path="*"
+      element={<Navigate to="/login" replace />}
+    />
+
+  </Routes>
+</BrowserRouter>
+
+
+);
 }
-
 
 export default App;

@@ -1,26 +1,40 @@
+
 import axios from "axios";
 
 const API_URL = "http://127.0.0.1:5000/api";
 
-const authService = {
-  register: async (data: {
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  message: string;
+  access_token: string;
+
+  user: {
+    id: number;
     first_name: string;
     last_name: string;
     email: string;
-    password: string;
-  }) => {
-    const response = await axios.post(
-      `${API_URL}/auth/register`,
-      data,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    role: string;
+    is_active: boolean;
+  };
+}
 
-    return response.data;
-  },
-};
+export async function login(
+  credentials: LoginRequest
+): Promise<LoginResponse> {
+  const response = await axios.post<LoginResponse>(
+    `${API_URL}/auth/login`,
+    credentials
+  );
 
-export default authService;
+  console.log(
+    "Réponse Flask login :",
+    response.data
+  );
+
+  return response.data;
+}
+

@@ -1,23 +1,23 @@
-
 from flask import Flask
 from flask_cors import CORS
 
 from app.config import Config
 from app.extensions import bcrypt, db, jwt, migrate
-from app.routes.dashboard import dashboard_bp
 
 
 def create_app():
     app = Flask(__name__)
 
+    # Configuration
     app.config.from_object(Config)
-    app.register_blueprint(dashboard_bp)
 
+    # Extensions
     db.init_app(app)
     migrate.init_app(app, db)
     jwt.init_app(app)
     bcrypt.init_app(app)
 
+    # CORS
     CORS(
         app,
         resources={
@@ -31,7 +31,7 @@ def create_app():
         supports_credentials=True,
     )
 
-    # Import des modèles pour que SQLAlchemy connaisse les tables
+    # Modèles SQLAlchemy
     from app.models.user import User
     from app.models.profile import Profile
     from app.models.application import Application
@@ -41,17 +41,13 @@ def create_app():
     from app.models.job_offer import JobOffer
     from app.models.matching import Matching
     from app.models.skill import Skill
-
-    # Import indispensable de la table d'association
     from app.models.job_offer_skill import job_offer_skill
 
-    # Routes
+    # Blueprints
     from app.routes.auth import auth_bp
+    from app.routes.dashboard import dashboard_bp
 
-    app.register_blueprint(
-        auth_bp,
-        url_prefix="/api/auth",
-    )
+    app.register_blueprint(auth_bp)
+    app.register_blueprint(dashboard_bp)
 
     return app
-

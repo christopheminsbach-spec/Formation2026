@@ -1,190 +1,502 @@
-import {
-    useEffect,
-    useState,
-} from "react";
 
-import api from "../api/axios";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import "./Dashboard.css";
 
-import {
-    useAuth,
-} from "../context/AuthContext";
-
-
-interface DashboardData {
-
-    applications: number;
-
-    interviews: number;
-
-    skills: number;
-
-    matches: number;
+interface User {
+  id: number;
+  first_name: string;
+  last_name: string;
+  email: string;
+  role: string;
 }
-
 
 export default function Dashboard() {
+  const navigate = useNavigate();
 
-    const {
-        user,
-        logout,
-    } = useAuth();
+  const [user, setUser] = useState<User | null>(null);
 
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
 
-    const [
-        data,
-        setData
-    ] = useState<DashboardData | null>(
-        null
-    );
-
-
-    const [
-        error,
-        setError
-    ] = useState("");
-
-
-    useEffect(() => {
-
-        api.get(
-            "/api/dashboard/"
-        )
-
-        .then((response) => {
-
-            setData(
-                response.data
-            );
-
-        })
-
-        .catch((error) => {
-
-            console.error(error);
-
-            setError(
-                "Impossible de charger le Dashboard."
-            );
-
-        });
-
-    }, []);
-
-
-    if (error) {
-
-        return (
-            <div>
-
-                <p>{error}</p>
-
-                <button onClick={logout}>
-                    Déconnexion
-                </button>
-
-            </div>
-        );
+    if (!storedUser) {
+      return;
     }
 
-
-    if (!data) {
-
-        return (
-            <div className="loading-screen">
-                Chargement Dashboard...
-            </div>
-        );
+    try {
+      const parsedUser: User = JSON.parse(storedUser);
+      setUser(parsedUser);
+    } catch (error) {
+      console.error(
+        "Impossible de lire les données utilisateur :",
+        error
+      );
     }
+  }, []);
 
+  const handleLogout = () => {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("user");
 
-    return (
+    navigate("/login");
+  };
 
-        <main className="dashboard">
+  return (
+    <div className="dashboard">
 
-            <header className="dashboard-header">
+      {/* =====================================================
+          SIDEBAR
+      ====================================================== */}
 
-                <div>
+      <aside className="dashboard-sidebar">
 
-                    <span>
-                        CareerAI Assistant
-                    </span>
+        <div className="dashboard-logo">
+          <span className="logo-icon">🤖</span>
+          <span>CareerAI</span>
+        </div>
 
-                    <h1>
-                        Bonjour {user?.first_name} 👋
-                    </h1>
+        <nav className="dashboard-nav">
 
-                    <p>
-                        Votre espace professionnel
-                        CDA IA
-                    </p>
+          <button className="nav-item active">
+            <span>📊</span>
+            <span>Dashboard</span>
+          </button>
 
-                </div>
+          <button
+            className="nav-item"
+            onClick={() => navigate("/profile")}
+          >
+            <span>👤</span>
+            <span>Mon profil</span>
+          </button>
 
+          <button
+            className="nav-item"
+            onClick={() => navigate("/applications")}
+          >
+            <span>📄</span>
+            <span>Candidatures</span>
+          </button>
 
-                <button
-                    onClick={logout}
-                >
-                    Déconnexion
-                </button>
+          <button
+            className="nav-item"
+            onClick={() => navigate("/matching")}
+          >
+            <span>🎯</span>
+            <span>Matching IA</span>
+          </button>
 
-            </header>
+          <button
+            className="nav-item"
+            onClick={() => navigate("/interview")}
+          >
+            <span>💬</span>
+            <span>Entretien IA</span>
+          </button>
 
+          <button
+            className="nav-item"
+            onClick={() => navigate("/documents")}
+          >
+            <span>📁</span>
+            <span>Documents</span>
+          </button>
 
-            <section className="dashboard-grid">
+        </nav>
 
-                <article className="dashboard-card">
+        <div className="sidebar-bottom">
 
-                    <span>
-                        Candidatures
-                    </span>
+          <button
+            className="nav-item"
+            onClick={() => navigate("/settings")}
+          >
+            <span>⚙️</span>
+            <span>Paramètres</span>
+          </button>
 
-                    <strong>
-                        {data.applications}
-                    </strong>
+          <button
+            className="logout-button"
+            onClick={handleLogout}
+          >
+            <span>🚪</span>
+            <span>Déconnexion</span>
+          </button>
 
-                </article>
+        </div>
 
+      </aside>
 
-                <article className="dashboard-card">
+      {/* =====================================================
+          MAIN
+      ====================================================== */}
 
-                    <span>
-                        Entretiens
-                    </span>
+      <main className="dashboard-main">
 
-                    <strong>
-                        {data.interviews}
-                    </strong>
+        {/* HEADER */}
 
-                </article>
+        <header className="dashboard-header">
 
+          <div className="dashboard-header-content">
 
-                <article className="dashboard-card">
+            <span className="dashboard-label">
+              ESPACE PERSONNEL
+            </span>
 
-                    <span>
-                        Compétences
-                    </span>
+            <h1>
+              Bonjour{" "}
+              {user?.first_name || "et bienvenue"} 👋
+            </h1>
 
-                    <strong>
-                        {data.skills}
-                    </strong>
+            <p className="dashboard-subtitle">
+              Voici un aperçu de votre parcours professionnel.
+            </p>
 
-                </article>
+          </div>
 
+          <div className="header-user">
 
-                <article className="dashboard-card">
+            <div className="user-avatar">
+              {user?.first_name
+                ?.charAt(0)
+                .toUpperCase() || "U"}
+            </div>
 
-                    <span>
-                        Matching IA
-                    </span>
+            <div className="user-details">
 
-                    <strong>
-                        {data.matches}
-                    </strong>
+              <strong>
+                {user
+                  ? `${user.first_name} ${user.last_name}`
+                  : "Utilisateur"}
+              </strong>
 
-                </article>
+              <span>
+                {user?.email || "Compte CareerAI"}
+              </span>
 
-            </section>
+            </div>
 
-        </main>
-    );
+          </div>
+
+        </header>
+
+        {/* =====================================================
+            STATISTICS
+        ====================================================== */}
+
+        <section className="stats-grid">
+
+          <article className="stat-card">
+
+            <div className="stat-icon">
+              📨
+            </div>
+
+            <div className="stat-content">
+
+              <span className="stat-title">
+                Candidatures
+              </span>
+
+              <strong>
+                0
+              </strong>
+
+              <small>
+                Aucune candidature
+              </small>
+
+            </div>
+
+          </article>
+
+          <article className="stat-card">
+
+            <div className="stat-icon">
+              🎯
+            </div>
+
+            <div className="stat-content">
+
+              <span className="stat-title">
+                Matchings IA
+              </span>
+
+              <strong>
+                0
+              </strong>
+
+              <small>
+                Analysez votre profil
+              </small>
+
+            </div>
+
+          </article>
+
+          <article className="stat-card">
+
+            <div className="stat-icon">
+              📄
+            </div>
+
+            <div className="stat-content">
+
+              <span className="stat-title">
+                Documents
+              </span>
+
+              <strong>
+                0
+              </strong>
+
+              <small>
+                CV et lettres
+              </small>
+
+            </div>
+
+          </article>
+
+          <article className="stat-card">
+
+            <div className="stat-icon">
+              💬
+            </div>
+
+            <div className="stat-content">
+
+              <span className="stat-title">
+                Entretiens IA
+              </span>
+
+              <strong>
+                0
+              </strong>
+
+              <small>
+                Entraînez-vous
+              </small>
+
+            </div>
+
+          </article>
+
+        </section>
+
+        {/* =====================================================
+            CONTENT
+        ====================================================== */}
+
+        <section className="dashboard-content">
+
+          {/* PROFILE */}
+
+          <article className="dashboard-panel profile-panel">
+
+            <div className="panel-header">
+
+              <div>
+
+                <span className="panel-kicker">
+                  PROFIL
+                </span>
+
+                <h2>
+                  Votre profil professionnel
+                </h2>
+
+              </div>
+
+              <button
+                className="panel-link"
+                onClick={() => navigate("/profile")}
+              >
+                Modifier →
+              </button>
+
+            </div>
+
+            <div className="profile-progress">
+
+              <div className="progress-header">
+
+                <span>
+                  Profil complété
+                </span>
+
+                <strong>
+                  20%
+                </strong>
+
+              </div>
+
+              <div className="progress-bar">
+
+                <div
+                  className="progress-value"
+                  style={{ width: "20%" }}
+                />
+
+              </div>
+
+              <p>
+                Complétez votre profil pour obtenir
+                des recommandations plus pertinentes.
+              </p>
+
+            </div>
+
+            <button
+              className="primary-button"
+              onClick={() => navigate("/profile")}
+            >
+              Compléter mon profil
+            </button>
+
+          </article>
+
+          {/* AI */}
+
+          <article className="dashboard-panel ai-panel">
+
+            <div className="ai-icon">
+              ✨
+            </div>
+
+            <span className="panel-kicker">
+              CAREERAI INTELLIGENCE
+            </span>
+
+            <h2>
+              Analysez votre potentiel professionnel
+            </h2>
+
+            <p>
+              Notre intelligence artificielle analyse
+              votre profil et vous aide à identifier
+              les opportunités qui correspondent
+              réellement à vos compétences.
+            </p>
+
+            <button
+              className="primary-button"
+              onClick={() => navigate("/matching")}
+            >
+              Lancer une analyse IA
+            </button>
+
+          </article>
+
+        </section>
+
+        {/* =====================================================
+            QUICK ACTIONS
+        ====================================================== */}
+
+        <section className="quick-section">
+
+          <div className="section-heading">
+
+            <span className="panel-kicker">
+              ACTIONS RAPIDES
+            </span>
+
+            <h2>
+              Que souhaitez-vous faire ?
+            </h2>
+
+          </div>
+
+          <div className="quick-grid">
+
+            <button
+              className="quick-card"
+              onClick={() => navigate("/applications")}
+            >
+
+              <span className="quick-icon">
+                📨
+              </span>
+
+              <div>
+
+                <strong>
+                  Ajouter une candidature
+                </strong>
+
+                <small>
+                  Suivez vos opportunités
+                </small>
+
+              </div>
+
+              <b>
+                →
+              </b>
+
+            </button>
+
+            <button
+              className="quick-card"
+              onClick={() => navigate("/documents")}
+            >
+
+              <span className="quick-icon">
+                📄
+              </span>
+
+              <div>
+
+                <strong>
+                  Créer un CV
+                </strong>
+
+                <small>
+                  Optimisez votre candidature
+                </small>
+
+              </div>
+
+              <b>
+                →
+              </b>
+
+            </button>
+
+            <button
+              className="quick-card"
+              onClick={() => navigate("/interview")}
+            >
+
+              <span className="quick-icon">
+                🎤
+              </span>
+
+              <div>
+
+                <strong>
+                  Simuler un entretien
+                </strong>
+
+                <small>
+                  Préparez votre prochain entretien
+                </small>
+
+              </div>
+
+              <b>
+                →
+              </b>
+
+            </button>
+
+          </div>
+
+        </section>
+
+      </main>
+
+    </div>
+  );
 }
+

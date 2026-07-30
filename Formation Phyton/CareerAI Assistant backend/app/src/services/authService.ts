@@ -1,4 +1,3 @@
-
 import axios from "axios";
 
 const API_URL = "http://127.0.0.1:5000/api";
@@ -8,33 +7,13 @@ export interface LoginRequest {
   password: string;
 }
 
-export interface LoginResponse {
-  message: string;
-  access_token: string;
-
-  user: {
-    id: number;
-    first_name: string;
-    last_name: string;
-    email: string;
-    role: string;
-    is_active: boolean;
-  };
-}
-
 export async function login(
   credentials: LoginRequest
-): Promise<LoginResponse> {
-  const response = await axios.post<LoginResponse>(
+) {
+  const response = await axios.post(
     `${API_URL}/auth/login`,
     credentials
   );
 
-  console.log(
-    "Réponse Flask login :",
-    response.data
-  );
-
   return response.data;
 }
-

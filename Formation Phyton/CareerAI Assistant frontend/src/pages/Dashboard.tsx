@@ -199,13 +199,12 @@ return (
 
 
 <button
+className="nav-item"
 onClick={() =>
-navigate("/dashboard")
+navigate("/applications")
 }
 >
-
-📊 Dashboard
-
+📄 Candidatures
 </button>
 
 
@@ -223,13 +222,9 @@ navigate("/profile")
 
 
 <button
-onClick={() =>
-navigate("/applications")
-}
+onClick={() => navigate("/applications")}
 >
-
 📄 Candidatures
-
 </button>
 
 

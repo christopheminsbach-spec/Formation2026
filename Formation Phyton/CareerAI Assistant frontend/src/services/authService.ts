@@ -1,49 +1,49 @@
-import API from "../api/axios";
+import axios from "axios";
 
 
-interface RegisterData {
-
-    firstname: string;
-    lastname: string;
-    email: string;
-    password: string;
-
-}
+const API_URL =
+"http://127.0.0.1:5000/api";
 
 
-interface LoginData {
+export interface LoginRequest {
 
-    email: string;
-    password: string;
+  email:string;
+
+  password:string;
 
 }
 
 
+export interface LoginResponse {
 
-export const register = async (
-    data:RegisterData
-)=>{
+  message:string;
 
-    const response = await API.post(
-        "/auth/register",
-        data
-    );
+  access_token:string;
 
-    return response.data;
+  user:{
+    id:number;
+    first_name:string;
+    last_name:string;
+    email:string;
+    role:string;
+    is_active:boolean;
+  };
 
-};
+}
 
 
 
-export const login = async (
-    data:LoginData
-)=>{
+export async function login(
+credentials:LoginRequest
+){
 
-    const response = await API.post(
-        "/auth/login",
-        data
-    );
+const response =
+await axios.post<LoginResponse>(
+`${API_URL}/auth/login`,
+credentials
+);
 
-    return response.data;
 
-};
+return response.data;
+
+}

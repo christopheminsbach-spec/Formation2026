@@ -1,151 +1,281 @@
-
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { login } from "../services/authService";
 import "./Login.css";
 
+
 export default function Login() {
+
   const navigate = useNavigate();
 
+
   const [email, setEmail] = useState("");
+
   const [password, setPassword] = useState("");
 
   const [error, setError] = useState("");
+
   const [loading, setLoading] = useState(false);
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+
+
+  async function handleSubmit(
+    e: React.FormEvent<HTMLFormElement>
+  ) {
+
     e.preventDefault();
 
+
     setError("");
+
     setLoading(true);
 
+
     try {
-      const response = await login({
-        email: email.trim().toLowerCase(),
-        password,
+
+
+      const data = await login({
+
+        email,
+
+        password
+
       });
 
-      console.log("✅ Login réussi");
-      console.log("JWT reçu :", Boolean(response.access_token));
-      console.log("Utilisateur :", response.user);
 
-      if (!response.access_token) {
-        throw new Error("Le serveur n'a retourné aucun JWT.");
-      }
-
-      // IMPORTANT :
-      // Stockage du JWT AVANT la navigation
-      localStorage.setItem(
-        "access_token",
-        response.access_token
-      );
-
-      // Vérification immédiate
-      const savedToken =
-        localStorage.getItem("access_token");
 
       console.log(
-        "JWT sauvegardé :",
-        Boolean(savedToken)
+        "Connexion réussie :",
+        data
       );
 
-      if (!savedToken) {
-        throw new Error(
-          "Impossible de sauvegarder le JWT."
-        );
-      }
 
-      // Navigation uniquement après sauvegarde
-      navigate("/dashboard", {
-        replace: true,
-      });
-    } catch (error: any) {
+
+      /*
+       Stockage JWT
+      */
+
+      localStorage.setItem(
+
+        "access_token",
+
+        data.access_token
+
+      );
+
+
+
+      /*
+       Stockage utilisateur
+      */
+
+      localStorage.setItem(
+
+        "user",
+
+        JSON.stringify(data.user)
+
+      );
+
+
+
+      /*
+       Redirection Dashboard
+      */
+
+      navigate("/dashboard");
+
+
+
+    } catch (err:any) {
+
+
       console.error(
-        "❌ Erreur connexion :",
-        error.response?.data || error
+
+        "Erreur connexion :",
+
+        err.response?.data || err
+
       );
+
+
 
       setError(
-        error.response?.data?.message ||
-        error.response?.data?.msg ||
-        error.message ||
-        "Connexion impossible."
+
+        err.response?.data?.message ||
+
+        "Email ou mot de passe incorrect"
+
       );
+
+
     } finally {
+
       setLoading(false);
+
     }
+
+
   }
 
+
+
   return (
+
     <div className="login-page">
+
+
       <div className="login-card">
 
-        <h1>CareerAI Assistant</h1>
 
-        <h2>Connexion</h2>
+        <h1>
+          🤖 CareerAI Assistant
+        </h1>
 
-        {error && (
-          <div className="error-message">
-            {error}
-          </div>
-        )}
 
-        <form onSubmit={handleSubmit}>
+        <p className="login-subtitle">
 
-          <div>
-            <label htmlFor="email">
+          Connectez-vous à votre espace
+
+        </p>
+
+
+
+        {
+          error && (
+
+            <div className="login-error">
+
+              {error}
+
+            </div>
+
+          )
+        }
+
+
+
+        <form
+          onSubmit={handleSubmit}
+        >
+
+
+
+          <div className="form-group">
+
+            <label>
               Email
             </label>
 
+
             <input
-              id="email"
+
               type="email"
-              placeholder="Votre adresse email"
+
+              placeholder="votre@email.com"
+
               value={email}
-              onChange={(e) =>
+
+              onChange={
+                (e) =>
                 setEmail(e.target.value)
               }
+
               required
+
             />
+
+
           </div>
 
-          <div>
-            <label htmlFor="password">
+
+
+
+          <div className="form-group">
+
+            <label>
               Mot de passe
             </label>
 
+
             <input
-              id="password"
+
               type="password"
-              placeholder="Votre mot de passe"
+
+              placeholder="********"
+
               value={password}
-              onChange={(e) =>
+
+              onChange={
+                (e) =>
                 setPassword(e.target.value)
               }
+
               required
+
             />
+
+
           </div>
 
+
+
+
           <button
+
             type="submit"
+
             disabled={loading}
+
+            className="login-button"
+
           >
-            {loading
+
+            {
+              loading
               ? "Connexion..."
-              : "Se connecter"}
+              : "Se connecter"
+            }
+
+
           </button>
+
+
 
         </form>
 
-        <p>
-          Pas encore de compte ?{" "}
-          <Link to="/register">
+
+
+        <p className="register-link">
+
+
+          Pas encore de compte ?
+
+
+          <button
+
+            type="button"
+
+            onClick={
+              () => navigate("/register")
+            }
+
+          >
+
             Créer un compte
-          </Link>
+
+          </button>
+
+
         </p>
 
-      </div>
-    </div>
-  );
-}
 
+
+      </div>
+
+
+    </div>
+
+  );
+
+}

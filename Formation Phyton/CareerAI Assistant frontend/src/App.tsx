@@ -9,6 +9,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
+import Applications from "./pages/ Applications";
 
 
 export default function App() {
@@ -21,6 +22,11 @@ export default function App() {
         <Route
           path="/login"
           element={<Login />}
+        />
+
+        <Route
+          path="/applications"
+          element={<Applications />}
         />
 
         <Route

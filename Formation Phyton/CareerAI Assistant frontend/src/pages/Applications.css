@@ -1,0 +1,175 @@
+.applications-page {
+
+min-height:100vh;
+
+padding:40px;
+
+background:#f5f7fb;
+
+}
+
+
+
+.back-button {
+
+border:none;
+
+background:#111827;
+
+color:white;
+
+padding:12px 20px;
+
+border-radius:10px;
+
+cursor:pointer;
+
+margin-bottom:30px;
+
+font-size:15px;
+
+}
+
+
+
+.back-button:hover {
+
+opacity:.85;
+
+}
+
+
+
+h1 {
+
+font-size:36px;
+
+margin-bottom:30px;
+
+}
+
+
+
+.application-form {
+
+background:white;
+
+padding:30px;
+
+border-radius:18px;
+
+box-shadow:0 10px 30px rgba(0,0,0,.08);
+
+margin-bottom:35px;
+
+}
+
+
+
+.application-form form {
+
+display:flex;
+
+gap:15px;
+
+flex-wrap:wrap;
+
+}
+
+
+
+.application-form input {
+
+padding:14px;
+
+border-radius:10px;
+
+border:1px solid #ddd;
+
+flex:1;
+
+min-width:220px;
+
+}
+
+
+
+.application-form button {
+
+background:#2563eb;
+
+color:white;
+
+border:none;
+
+padding:14px 25px;
+
+border-radius:10px;
+
+cursor:pointer;
+
+}
+
+
+
+.application-list {
+
+display:flex;
+
+flex-direction:column;
+
+gap:20px;
+
+}
+
+
+
+.application-card {
+
+background:white;
+
+padding:25px;
+
+border-radius:18px;
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+box-shadow:0 8px 25px rgba(0,0,0,.08);
+
+}
+
+
+
+.application-card h3 {
+
+margin:0;
+
+font-size:22px;
+
+}
+
+
+
+.application-card p {
+
+color:#666;
+
+}
+
+
+
+.application-card select {
+
+padding:12px;
+
+border-radius:10px;
+
+border:1px solid #ddd;
+
+cursor:pointer;
+
+}

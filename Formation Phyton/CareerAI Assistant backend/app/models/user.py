@@ -77,10 +77,10 @@ class User(db.Model):
     # Candidatures
     # ─────────────────────────────────────────────
 
-    applications: Mapped[list["Application"]] = relationship(
-        "Application",
-        back_populates="user",
-        cascade="all, delete-orphan",
+    applications = db.relationship(
+       "Application",
+       back_populates="user",
+       cascade="all, delete"
     )
 
     # ─────────────────────────────────────────────

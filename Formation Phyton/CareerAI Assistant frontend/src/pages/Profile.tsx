@@ -1,182 +1,263 @@
-import {
-  useEffect,
-  useState,
-} from "react";
-
-import {
-  useNavigate,
-} from "react-router-dom";
-
-import api from "../api/axios";
-
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Profile.css";
 
 
 interface User {
-
-  id:number;
-
-  first_name:string;
-
-  last_name:string;
-
-  email:string;
-
-  role:string;
-
+  id: number;
+  first_name: string;
+  last_name: string;
+  email: string;
+  role: string;
+  is_active: boolean;
 }
 
 
-export default function Profile(){
+export default function Profile() {
 
-const navigate = useNavigate();
+  const navigate = useNavigate();
 
+  const [user, setUser] = useState<User | null>(null);
 
-const [user,setUser] =
-useState<User | null>(null);
 
+  useEffect(() => {
 
-const [loading,setLoading] =
-useState(true);
+    const token =
+      localStorage.getItem("access_token");
 
+    const storedUser =
+      localStorage.getItem("user");
 
-const [error,setError] =
-useState("");
 
+    if (!token || !storedUser) {
 
+      navigate("/login");
 
-useEffect(()=>{
+      return;
+    }
 
 
-async function loadProfile(){
+    try {
 
-try{
+      const userData =
+        JSON.parse(storedUser);
 
+      setUser(userData);
 
-const response =
-await api.get("/profile/");
 
+    } catch(error) {
 
-setUser(
-response.data.user
-);
+      console.error(
+        "Erreur lecture utilisateur",
+        error
+      );
 
+      navigate("/login");
 
-}
-catch(error){
+    }
 
-console.error(error);
 
-setError(
-"Impossible de charger le profil"
-);
+  }, [navigate]);
 
 
-}
-finally{
 
-setLoading(false);
+  const logout = () => {
 
-}
+    localStorage.removeItem(
+      "access_token"
+    );
 
+    localStorage.removeItem(
+      "user"
+    );
 
-}
 
+    navigate("/login");
 
-loadProfile();
+  };
 
 
-},[]);
 
+  if (!user) {
 
+    return (
 
-if(loading){
+      <div className="profile-loading">
 
-return (
-<h2>
-Chargement...
-</h2>
-);
+        Chargement du profil...
 
-}
+      </div>
 
+    );
 
+  }
 
-if(error){
 
-return (
-<h2>
-{error}
-</h2>
-);
 
-}
+  return (
 
+    <div className="profile-page">
 
 
-return (
+      <div className="profile-card">
 
-<div className="profile-page">
 
+        <div className="profile-header">
 
-<button
-onClick={() => navigate("/dashboard")}
->
-← Retour au Dashboard
-</button>
 
+          <div className="profile-avatar">
 
+            {
+              user.first_name
+                .charAt(0)
+                .toUpperCase()
+            }
 
-<div className="profile-card">
+          </div>
 
 
-<h1>
-Mon profil
-</h1>
+          <div>
 
+            <h1>
+              Mon profil
+            </h1>
 
-<div className="avatar">
 
-{
-user?.first_name
-.charAt(0)
-.toUpperCase()
-}
+            <p>
+              CareerAI Assistant
+            </p>
 
-</div>
 
+          </div>
 
 
-<h2>
+        </div>
 
-{user?.first_name}
 
-{" "}
 
-{user?.last_name}
+        <div className="profile-info">
 
-</h2>
 
+          <div className="info-item">
 
+            <span>
+              Prénom
+            </span>
 
-<p>
-📧 {user?.email}
-</p>
+            <strong>
+              {user.first_name}
+            </strong>
 
+          </div>
 
 
-<p>
-🎯 Rôle :
-{user?.role}
-</p>
 
+          <div className="info-item">
 
-</div>
+            <span>
+              Nom
+            </span>
 
+            <strong>
+              {user.last_name}
+            </strong>
 
-</div>
+          </div>
 
-);
 
+
+          <div className="info-item">
+
+            <span>
+              Email
+            </span>
+
+            <strong>
+              {user.email}
+            </strong>
+
+          </div>
+
+
+
+          <div className="info-item">
+
+            <span>
+              Rôle
+            </span>
+
+            <strong>
+              {user.role}
+            </strong>
+
+          </div>
+
+
+
+          <div className="info-item">
+
+            <span>
+              Statut
+            </span>
+
+
+            <strong
+              className={
+                user.is_active
+                ? "active"
+                : "inactive"
+              }
+            >
+
+              {
+                user.is_active
+                ? "Compte actif"
+                : "Compte désactivé"
+              }
+
+
+            </strong>
+
+
+          </div>
+
+
+        </div>
+
+
+
+        <div className="profile-actions">
+
+
+          <button
+            className="back-button"
+            onClick={() => navigate("/dashboard")}
+          >
+
+            ← Retour Dashboard
+
+          </button>
+
+
+
+          <button
+            className="logout-button"
+            onClick={logout}
+          >
+
+            Déconnexion
+
+          </button>
+
+
+        </div>
+
+
+      </div>
+
+
+    </div>
+
+  );
 
 }

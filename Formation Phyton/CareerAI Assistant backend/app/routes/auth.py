@@ -95,16 +95,17 @@ def register():
     # --------------------------------------------------------
 
     return jsonify({
-        "message": "Utilisateur créé avec succès",
-        "user": {
-            "id": user.id,
-            "first_name": user.first_name,
-            "last_name": user.last_name,
-            "email": user.email,
-            "role": user.role,
-            "is_active": user.is_active,
-        },
-    }), 201
+    "message": "Connexion réussie",
+    "access_token": access_token,
+    "user": {
+        "id": user.id,
+        "first_name": user.first_name,
+        "last_name": user.last_name,
+        "email": user.email,
+        "role": user.role,
+        "is_active": user.is_active,
+    }
+}), 200
 
 
 # ============================================================

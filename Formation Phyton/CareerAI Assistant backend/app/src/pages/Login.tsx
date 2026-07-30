@@ -39,14 +39,17 @@ export default function Login() {
         response.access_token
       );
 
-      // Vérification immédiate
-      const savedToken =
-        localStorage.getItem("access_token");
+      localStorage.setItem(
+        "user",
+        JSON.stringify(response.user)
+);
 
-      console.log(
-        "JWT sauvegardé :",
-        Boolean(savedToken)
-      );
+      // Vérification immédiate
+      const savedToken = localStorage.getItem("access_token");
+      const savedUser = localStorage.getItem("user");
+
+      console.log("JWT sauvegardé :", Boolean(savedToken));
+      console.log("Utilisateur sauvegardé :", Boolean(savedUser));
 
       if (!savedToken) {
         throw new Error(

@@ -1,94 +1,59 @@
-import {
-  useEffect,
-  useState,
-} from "react";
-
+import { useEffect, useState } from "react";
 import api from "../api/axios";
 
 interface User {
   id: number;
-  firstname: string;
-  lastname: string;
+  first_name: string;
+  last_name: string;
   email: string;
+  role: string;
+  is_active: boolean;
 }
 
 export default function Profile() {
-
-  const [user, setUser] =
-    useState<User | null>(null);
-
-  const [loading, setLoading] =
-    useState(true);
-
-  const [error, setError] =
-    useState("");
-
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-
-    const loadProfile = async () => {
-
+    async function loadProfile() {
       try {
+        const response = await api.get("/profile/");
 
-        const response =
-          await api.get("/auth/me");
-
-        setUser(response.data);
-
-      } catch {
+        setUser(response.data.user);
+      } catch (err: any) {
+        console.error(err);
 
         setError(
-          "Impossible de récupérer le profil"
+          err.response?.data?.message ||
+          err.response?.data?.msg ||
+          "Impossible de récupérer le profil."
         );
-
       } finally {
-
         setLoading(false);
-
       }
-    };
+    }
 
     loadProfile();
-
   }, []);
 
+  if (loading) return <h2>Chargement...</h2>;
 
-  if (loading) {
-    return <p>Chargement du profil...</p>;
-  }
+  if (error) return <h2>{error}</h2>;
 
-
-  if (error) {
-    return <p>{error}</p>;
-  }
-
-
-  if (!user) {
-    return <p>Aucun profil.</p>;
-  }
-
+  if (!user) return <h2>Aucun utilisateur.</h2>;
 
   return (
-
     <main>
-
       <h1>Mon profil</h1>
 
-      <p>
-        <strong>Prénom :</strong>{" "}
-        {user.firstname}
-      </p>
+      <p><strong>Prénom :</strong> {user.first_name}</p>
 
-      <p>
-        <strong>Nom :</strong>{" "}
-        {user.lastname}
-      </p>
+      <p><strong>Nom :</strong> {user.last_name}</p>
 
-      <p>
-        <strong>Email :</strong>{" "}
-        {user.email}
-      </p>
+      <p><strong>Email :</strong> {user.email}</p>
 
+      <p><strong>Rôle :</strong> {user.role}</p>
     </main>
   );
 }

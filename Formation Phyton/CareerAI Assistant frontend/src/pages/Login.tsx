@@ -1,281 +1,359 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { login } from "../services/authService";
+import {
+    useState
+} from "react";
+
+
+import {
+    useNavigate
+} from "react-router-dom";
+
+
+import {
+    useAuth
+} from "../context/AuthContext";
+
+
 import "./Login.css";
 
 
-export default function Login() {
 
-  const navigate = useNavigate();
-
-
-  const [email, setEmail] = useState("");
-
-  const [password, setPassword] = useState("");
-
-  const [error, setError] = useState("");
-
-  const [loading, setLoading] = useState(false);
+export default function Login(){
 
 
-
-  async function handleSubmit(
-    e: React.FormEvent<HTMLFormElement>
-  ) {
-
-    e.preventDefault();
+    const navigate =
+        useNavigate();
 
 
-    setError("");
-
-    setLoading(true);
-
-
-    try {
-
-
-      const data = await login({
-
-        email,
-
-        password
-
-      });
+    const {
+        login
+    } = useAuth();
 
 
 
-      console.log(
-        "Connexion réussie :",
-        data
-      );
+    const [email,setEmail] =
+        useState("");
+
+
+    const [password,setPassword] =
+        useState("");
+
+
+    const [error,setError] =
+        useState("");
+
+
+    const [loading,setLoading] =
+        useState(false);
 
 
 
-      /*
-       Stockage JWT
-      */
-
-      localStorage.setItem(
-
-        "access_token",
-
-        data.access_token
-
-      );
 
 
+    async function handleSubmit(
+        e:React.FormEvent<HTMLFormElement>
+    ){
 
-      /*
-       Stockage utilisateur
-      */
 
-      localStorage.setItem(
+        e.preventDefault();
 
-        "user",
 
-        JSON.stringify(data.user)
+        setError("");
 
-      );
+        setLoading(true);
 
 
 
-      /*
-       Redirection Dashboard
-      */
-
-      navigate("/dashboard");
+        try{
 
 
-
-    } catch (err:any) {
-
-
-      console.error(
-
-        "Erreur connexion :",
-
-        err.response?.data || err
-
-      );
+            await login(
+                email,
+                password
+            );
 
 
 
-      setError(
-
-        err.response?.data?.message ||
-
-        "Email ou mot de passe incorrect"
-
-      );
+            navigate(
+                "/dashboard"
+            );
 
 
-    } finally {
 
-      setLoading(false);
+        }catch(error:any){
+
+
+
+            console.error(
+                "Erreur connexion :",
+                error
+            );
+
+
+
+            setError(
+                error.response?.data?.message
+                ||
+                "Email ou mot de passe incorrect"
+            );
+
+
+
+        }finally{
+
+
+            setLoading(false);
+
+
+        }
+
 
     }
 
 
-  }
 
 
 
-  return (
+    return (
 
-    <div className="login-page">
-
-
-      <div className="login-card">
+        <div className="login-page">
 
 
-        <h1>
-          🤖 CareerAI Assistant
-        </h1>
-
-
-        <p className="login-subtitle">
-
-          Connectez-vous à votre espace
-
-        </p>
+            <div className="login-card">
 
 
 
-        {
-          error && (
+                <div className="login-logo">
 
-            <div className="login-error">
+                    🤖
 
-              {error}
+                </div>
+
+
+
+
+                <h1>
+
+                    CareerAI Assistant
+
+                </h1>
+
+
+
+
+                <p className="login-subtitle">
+
+                    Connectez-vous à votre espace professionnel
+
+                </p>
+
+
+
+
+
+                {
+                    error && (
+
+                        <div className="login-error">
+
+                            {error}
+
+                        </div>
+
+                    )
+                }
+
+
+
+
+
+
+                <form
+                    onSubmit={handleSubmit}
+                >
+
+
+
+
+
+                    <div className="form-group">
+
+
+                        <label>
+
+                            Email
+
+                        </label>
+
+
+
+                        <input
+
+                            type="email"
+
+                            placeholder="email@example.com"
+
+                            value={email}
+
+
+                            onChange={
+                                (e)=>
+                                setEmail(
+                                    e.target.value
+                                )
+                            }
+
+
+                            required
+
+                        />
+
+
+
+                    </div>
+
+
+
+
+
+
+
+                    <div className="form-group">
+
+
+                        <label>
+
+                            Mot de passe
+
+                        </label>
+
+
+
+
+                        <input
+
+
+                            type="password"
+
+
+                            placeholder="Votre mot de passe"
+
+
+
+                            value={password}
+
+
+
+                            onChange={
+                                (e)=>
+                                setPassword(
+                                    e.target.value
+                                )
+                            }
+
+
+
+                            required
+
+
+                        />
+
+
+
+                    </div>
+
+
+
+
+
+
+
+                    <button
+
+                        type="submit"
+
+
+                        className="login-button"
+
+
+                        disabled={loading}
+
+
+                    >
+
+
+                        {
+
+                            loading
+
+                            ?
+
+                            "Connexion..."
+
+                            :
+
+                            "Se connecter"
+
+                        }
+
+
+
+                    </button>
+
+
+
+
+
+                </form>
+
+
+
+
+
+
+                <div className="register-link">
+
+
+                    Vous n'avez pas encore de compte ?
+
+
+
+                    <button
+
+
+                        type="button"
+
+
+
+                        onClick={
+                            ()=>navigate(
+                                "/register"
+                            )
+                        }
+
+
+                    >
+
+
+                        Créer un compte
+
+
+                    </button>
+
+
+
+                </div>
+
+
+
+
 
             </div>
 
-          )
-        }
 
 
+        </div>
 
-        <form
-          onSubmit={handleSubmit}
-        >
 
-
-
-          <div className="form-group">
-
-            <label>
-              Email
-            </label>
-
-
-            <input
-
-              type="email"
-
-              placeholder="votre@email.com"
-
-              value={email}
-
-              onChange={
-                (e) =>
-                setEmail(e.target.value)
-              }
-
-              required
-
-            />
-
-
-          </div>
-
-
-
-
-          <div className="form-group">
-
-            <label>
-              Mot de passe
-            </label>
-
-
-            <input
-
-              type="password"
-
-              placeholder="********"
-
-              value={password}
-
-              onChange={
-                (e) =>
-                setPassword(e.target.value)
-              }
-
-              required
-
-            />
-
-
-          </div>
-
-
-
-
-          <button
-
-            type="submit"
-
-            disabled={loading}
-
-            className="login-button"
-
-          >
-
-            {
-              loading
-              ? "Connexion..."
-              : "Se connecter"
-            }
-
-
-          </button>
-
-
-
-        </form>
-
-
-
-        <p className="register-link">
-
-
-          Pas encore de compte ?
-
-
-          <button
-
-            type="button"
-
-            onClick={
-              () => navigate("/register")
-            }
-
-          >
-
-            Créer un compte
-
-          </button>
-
-
-        </p>
-
-
-
-      </div>
-
-
-    </div>
-
-  );
+    );
 
 }

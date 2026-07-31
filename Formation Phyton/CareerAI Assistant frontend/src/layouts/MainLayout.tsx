@@ -1,54 +1,38 @@
-import type { ReactNode } from "react";
+import { Outlet } from "react-router-dom";
 
-import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
-import Footer from "../components/Footer";
+import Navbar from "../components/Navbar";
 
 import "./MainLayout.css";
 
 
-interface MainLayoutProps {
-
-    children: ReactNode;
-
-}
-
-
-export default function MainLayout({
-
-    children
-
-}: MainLayoutProps) {
-
+export default function MainLayout(){
 
     return (
 
-<div className="app-layout">
+        <div className="layout">
 
 
-    <Navbar />
+            <Sidebar />
 
 
-    <div className="layout-body">
+            <div className="layout-content">
 
 
-        <Sidebar />
+                <Navbar />
 
 
-        <main className="main-content">
+                <main className="page-content">
 
-            {children}
+                    <Outlet />
 
-        </main>
-
-
-    </div>
+                </main>
 
 
-    <Footer />
+            </div>
 
 
-</div>
+        </div>
 
     );
 

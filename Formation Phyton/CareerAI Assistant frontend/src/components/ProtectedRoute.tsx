@@ -1,29 +1,56 @@
 import {
-  Navigate,
-  Outlet,
+    Navigate,
+    Outlet
 } from "react-router-dom";
 
-import { useAuth } from "../context/AuthContext";
 
-export default function ProtectedRoute() {
-  const { token, loading } = useAuth();
+import {
+    useAuth
+} from "../context/AuthContext";
 
-  if (loading) {
-    return (
-      <div>
-        Chargement...
-      </div>
-    );
-  }
 
-  if (!token) {
-    return (
-      <Navigate
-        to="/login"
-        replace
-      />
-    );
-  }
 
-  return <Outlet />;
+export default function ProtectedRoute(){
+
+
+    const {
+        token,
+        loading
+    } = useAuth();
+
+
+
+    if(loading){
+
+        return (
+
+            <div>
+
+                Chargement...
+
+            </div>
+
+        );
+
+    }
+
+
+
+    if(!token){
+
+        return (
+
+            <Navigate
+                to="/login"
+                replace
+            />
+
+        );
+
+    }
+
+
+
+    return <Outlet />;
+
 }

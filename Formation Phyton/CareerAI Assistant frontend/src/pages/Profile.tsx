@@ -1,263 +1,191 @@
-import { useEffect, useState } from "react";
+import { useEffect,useState } from "react";
 import { useNavigate } from "react-router-dom";
+
+import { getProfile } from "../services/profileService";
+
 import "./Profile.css";
 
 
+
 interface User {
-  id: number;
-  first_name: string;
-  last_name: string;
-  email: string;
-  role: string;
-  is_active: boolean;
+
+
+id:number;
+
+first_name:string;
+
+last_name:string;
+
+email:string;
+
+role:string;
+
 }
 
 
-export default function Profile() {
 
-  const navigate = useNavigate();
+export default function Profile(){
 
-  const [user, setUser] = useState<User | null>(null);
 
 
-  useEffect(() => {
+const navigate = useNavigate();
 
-    const token =
-      localStorage.getItem("access_token");
 
-    const storedUser =
-      localStorage.getItem("user");
+const [user,setUser]=
+useState<User|null>(null);
 
 
-    if (!token || !storedUser) {
 
-      navigate("/login");
+useEffect(()=>{
 
-      return;
-    }
 
+async function loadProfile(){
 
-    try {
 
-      const userData =
-        JSON.parse(storedUser);
+try{
 
-      setUser(userData);
 
+const data =
+await getProfile();
 
-    } catch(error) {
 
-      console.error(
-        "Erreur lecture utilisateur",
-        error
-      );
+setUser(data.user);
 
-      navigate("/login");
 
-    }
+}
 
+catch(error){
 
-  }, [navigate]);
 
+console.error(error);
 
 
-  const logout = () => {
+navigate("/login");
 
-    localStorage.removeItem(
-      "access_token"
-    );
 
-    localStorage.removeItem(
-      "user"
-    );
+}
 
 
-    navigate("/login");
+}
 
-  };
 
+loadProfile();
 
 
-  if (!user) {
 
-    return (
+},[navigate]);
 
-      <div className="profile-loading">
 
-        Chargement du profil...
 
-      </div>
 
-    );
+function logout(){
 
-  }
 
+localStorage.removeItem(
+"access_token"
+);
 
 
-  return (
+localStorage.removeItem(
+"user"
+);
 
-    <div className="profile-page">
 
+navigate("/login");
 
-      <div className="profile-card">
 
+}
 
-        <div className="profile-header">
 
 
-          <div className="profile-avatar">
 
-            {
-              user.first_name
-                .charAt(0)
-                .toUpperCase()
-            }
+if(!user){
 
-          </div>
 
+return (
 
-          <div>
+<div>
 
-            <h1>
-              Mon profil
-            </h1>
+Chargement profil...
 
+</div>
 
-            <p>
-              CareerAI Assistant
-            </p>
+)
 
+}
 
-          </div>
 
 
-        </div>
+return (
 
+<div className="profile-page">
 
 
-        <div className="profile-info">
+<div className="profile-card">
 
 
-          <div className="info-item">
+<div className="avatar">
 
-            <span>
-              Prénom
-            </span>
+{
+user.first_name
+.charAt(0)
+.toUpperCase()
+}
 
-            <strong>
-              {user.first_name}
-            </strong>
+</div>
 
-          </div>
 
 
+<h1>
 
-          <div className="info-item">
+{user.first_name}
+{" "}
+{user.last_name}
 
-            <span>
-              Nom
-            </span>
+</h1>
 
-            <strong>
-              {user.last_name}
-            </strong>
 
-          </div>
+<p>
 
+{user.email}
 
+</p>
 
-          <div className="info-item">
 
-            <span>
-              Email
-            </span>
 
-            <strong>
-              {user.email}
-            </strong>
+<p>
 
-          </div>
+Rôle :
+<strong>
+{" "}
+{user.role}
+</strong>
 
+</p>
 
 
-          <div className="info-item">
 
-            <span>
-              Rôle
-            </span>
 
-            <strong>
-              {user.role}
-            </strong>
+<button
 
-          </div>
+onClick={logout}
 
+>
 
+Déconnexion
 
-          <div className="info-item">
+</button>
 
-            <span>
-              Statut
-            </span>
 
 
-            <strong
-              className={
-                user.is_active
-                ? "active"
-                : "inactive"
-              }
-            >
+</div>
 
-              {
-                user.is_active
-                ? "Compte actif"
-                : "Compte désactivé"
-              }
 
+</div>
 
-            </strong>
 
+)
 
-          </div>
 
-
-        </div>
-
-
-
-        <div className="profile-actions">
-
-
-          <button
-            className="back-button"
-            onClick={() => navigate("/dashboard")}
-          >
-
-            ← Retour Dashboard
-
-          </button>
-
-
-
-          <button
-            className="logout-button"
-            onClick={logout}
-          >
-
-            Déconnexion
-
-          </button>
-
-
-        </div>
-
-
-      </div>
-
-
-    </div>
-
-  );
 
 }

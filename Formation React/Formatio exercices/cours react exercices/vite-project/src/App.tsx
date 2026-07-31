@@ -1,35 +1,21 @@
-import { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Home from "./components/Home";
+import About from "./components/About";
+import Navbar from "./components/navbar";
+import Parag from "./components/parag";
 
-// 1.Ajouter un userEffetct qui s'éxecute au montage
-// (tableau de dépendances vide)
-
-// 2. A l 'interieur, utiliser setTimeout pour passer
-//. show à true aprés 2000ms
-
-
-// A faire 
-
-// 1. useEffect(() => {...}, [])
-
-//. setTimeout(() => setShow(true), 2000) à l'intérieur
-function FlashMessage() {
-  const [show, setShow] = useState(false);
-
-    useEffect(() => {
-    setTimeout(() => {
-      setShow(true);
-    }, 2000);
-   }, []);
-  
+function App() {
   return (
-    <div>
-      <button type="button" onClick={() => setShow((prev) => !prev)}>
-        {show ? 'Masquer' : 'Afficher'}
-      </button>
-      {show ? <p>chargements terminés</p> : null}
-    </div>
-  )
+    <BrowserRouter>
+      <Navbar />
+
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/parag" element={<Parag />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-
-export default FlashMessage;
+export default App;

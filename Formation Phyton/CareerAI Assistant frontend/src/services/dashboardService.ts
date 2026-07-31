@@ -1,27 +1,15 @@
-import api from "./api";
+import api from "../api/api";
 
 
-export interface DashboardStats {
-    applications: number;
-    interviews: number;
-    documents: number;
-    matches: number;
-}
 
+export async function getDashboard(){
 
-export interface DashboardResponse {
-    success: boolean;
-    message: string;
-    user_id: string | number;
-    stats: DashboardStats;
-}
+    const response =
+        await api.get(
+            "/dashboard/"
+        );
 
-
-export async function getDashboard(): Promise<DashboardResponse> {
-
-    const response = await api.get<DashboardResponse>(
-        "/dashboard/"
-    );
 
     return response.data;
+
 }

@@ -4,115 +4,51 @@ import "./Navbar.css";
 export default function Navbar(){
 
 
-    return (
+const user =
+JSON.parse(
+localStorage.getItem("user") || "{}"
+);
 
-        <header className="navbar">
 
 
-            {/* Partie gauche */}
+return (
 
-            <div className="navbar-left">
+<header className="navbar">
 
 
-                <h1>
+<div>
 
-                    🚀 CareerAI Assistant
+CareerAI Assistant
 
-                </h1>
+</div>
 
 
-            </div>
 
+<div className="navbar-user">
 
 
-            {/* Recherche */}
+<span>
 
-            <div className="navbar-search">
+👤
 
+</span>
 
-                <input
 
-                    type="text"
+<strong>
 
-                    placeholder="Rechercher une candidature, une compétence..."
+{
+user.first_name || "Utilisateur"
+}
 
-                />
+</strong>
 
 
-            </div>
+</div>
 
 
+</header>
 
 
-            {/* Partie droite */}
-
-            <div className="navbar-right">
-
-
-
-                <button className="icon-button">
-
-
-                    🔔
-
-
-                </button>
-
-
-
-
-                <button className="icon-button">
-
-
-                    🌙
-
-
-                </button>
-
-
-
-
-
-                <div className="user-profile">
-
-
-                    <div className="avatar">
-
-                        CM
-
-                    </div>
-
-
-                    <div>
-
-
-                        <strong>
-
-                            Christophe
-
-                        </strong>
-
-
-                        <span>
-
-                            CDA IA 2026
-
-                        </span>
-
-
-                    </div>
-
-
-                </div>
-
-
-
-            </div>
-
-
-
-        </header>
-
-    );
+)
 
 }

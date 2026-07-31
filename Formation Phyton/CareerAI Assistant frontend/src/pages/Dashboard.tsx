@@ -1,30 +1,22 @@
-import {
-  useEffect,
-  useState
-} from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-import {
-  useNavigate
-} from "react-router-dom";
-
-import api from "../services/api";
+import { getDashboard } from "../services/dashboardService";
 
 import "./Dashboard.css";
 
 
-interface User {
+interface DashboardData {
 
-  id:number;
+    user: {
+        first_name:string;
+        last_name:string;
+        email:string;
+    };
 
-  first_name:string;
-
-  last_name:string;
-
-  email:string;
-
-  role:string;
-
-  is_active:boolean;
+    applications:number;
+    documents:number;
+    matches:number;
 
 }
 
@@ -36,80 +28,41 @@ export default function Dashboard(){
 const navigate = useNavigate();
 
 
-const [user,setUser] =
-useState<User | null>(null);
+const [data,setData] =
+useState<DashboardData | null>(null);
 
 
-const [loading,setLoading] =
-useState(true);
+const [error,setError] =
+useState("");
 
 
 
 useEffect(()=>{
 
 
-async function loadProfile(){
+async function loadDashboard(){
 
 try{
 
 
-const response =
-await api.get("/profile/");
+const result =
+await getDashboard();
 
 
-const currentUser =
-response.data.user;
-
-
-setUser(currentUser);
-
-
-
-localStorage.setItem(
-
-"user",
-
-JSON.stringify(currentUser)
-
-);
-
+setData(result);
 
 
 }
-catch(error){
+catch(err:any){
 
 
-console.error(
-"Erreur profil :",
-error
+console.error(err);
+
+
+setError(
+"Impossible de charger le dashboard"
 );
 
-
-
-localStorage.removeItem(
-"access_token"
-);
-
-
-localStorage.removeItem(
-"user"
-);
-
-
-
-navigate(
-"/login",
-{
-replace:true
-}
-);
-
-
-
-}
-finally{
-
-setLoading(false);
 
 }
 
@@ -117,365 +70,153 @@ setLoading(false);
 }
 
 
-
-loadProfile();
-
+loadDashboard();
 
 
-},[navigate]);
+},[]);
 
 
 
 
-
-function handleLogout(){
-
-
-localStorage.removeItem(
-"access_token"
-);
-
-
-localStorage.removeItem(
-"user"
-);
-
-
-
-navigate(
-"/login",
-{
-replace:true
-}
-);
-
-
-
-}
-
-
-
-
-
-if(loading){
+if(error){
 
 return (
 
-<div className="dashboard-loading">
+<div className="dashboard-error">
 
-Chargement du Dashboard...
+{error}
 
 </div>
 
-);
-
+)
 
 }
 
 
 
 
+if(!data){
 
 return (
-
-
-<div className="dashboard">
-
-
-
-<aside className="dashboard-sidebar">
-
-
-
-<div className="dashboard-logo">
-
-🤖 CareerAI
-
-</div>
-
-
-
-<nav className="dashboard-menu">
-
-
-<button
-className="nav-item"
-onClick={() =>
-navigate("/applications")
-}
->
-📄 Candidatures
-</button>
-
-
-
-<button
-onClick={() =>
-navigate("/profile")
-}
->
-
-👤 Mon profil
-
-</button>
-
-
-
-<button
-onClick={() => navigate("/applications")}
->
-📄 Candidatures
-</button>
-
-
-
-<button
-onClick={() =>
-navigate("/matching")
-}
->
-
-🎯 Matching IA
-
-</button>
-
-
-
-<button
-onClick={() =>
-navigate("/interview")
-}
->
-
-💬 Entretien IA
-
-</button>
-
-
-
-<button
-onClick={() =>
-navigate("/documents")
-}
->
-
-📁 Documents
-
-</button>
-
-
-
-</nav>
-
-
-
-
-<button
-
-className="logout-button"
-
-onClick={handleLogout}
-
->
-
-🚪 Déconnexion
-
-</button>
-
-
-
-</aside>
-
-
-
-
-
-<main className="dashboard-main">
-
-
-
-<header className="dashboard-header">
-
-
 
 <div>
 
+Chargement...
 
-<p className="dashboard-label">
+</div>
 
-ESPACE PERSONNEL
+)
 
-</p>
+}
 
+
+
+
+return (
+
+<div className="dashboard-page">
+
+
+<div className="dashboard-card">
 
 
 <h1>
 
-Bonjour{" "}
-
-{user?.first_name}
-
-👋
+Bonjour {data.user.first_name} 👋
 
 </h1>
 
 
+<p>
 
-<p className="dashboard-subtitle">
-
-Bienvenue dans votre espace CareerAI Assistant.
+Bienvenue dans CareerAI Assistant
 
 </p>
 
 
 
-</div>
+<div className="dashboard-grid">
 
 
+<div className="dashboard-box">
 
+<h2>
 
-<div
+📄 Candidatures
 
-className="header-user"
-
-onClick={() =>
-navigate("/profile")
-}
-
->
-
-
-
-<div className="user-avatar">
-
-{
-user?.first_name
-?.charAt(0)
-.toUpperCase()
-}
-
-</div>
-
-
-
-
-<div className="user-details">
+</h2>
 
 
 <strong>
 
-{
-user?.first_name
-}
-
-{" "}
-
-{
-user?.last_name
-}
+{data.applications}
 
 </strong>
 
 
+</div>
 
-<span>
 
-{
-user?.email
-}
 
-</span>
+<div className="dashboard-box">
 
+<h2>
+
+📁 Documents
+
+</h2>
+
+
+<strong>
+
+{data.documents}
+
+</strong>
 
 
 </div>
 
 
 
-</div>
+<div className="dashboard-box">
+
+<h2>
+
+🤖 Matching IA
+
+</h2>
 
 
+<strong>
 
-</header>
+{data.matches}
 
+</strong>
 
-
-
-<section className="dashboard-cards">
-
-
-
-<div className="dashboard-card">
-
-<h3>
-
-📄 Candidatures
-
-</h3>
-
-<p>
-
-Gérez vos candidatures.
-
-</p>
 
 </div>
-
-
-
-
-<div className="dashboard-card">
-
-<h3>
-
-🎯 Matching IA
-
-</h3>
-
-<p>
-
-Analysez les offres adaptées.
-
-</p>
-
-</div>
-
-
-
-
-<div className="dashboard-card">
-
-<h3>
-
-💬 Entretien IA
-
-</h3>
-
-<p>
-
-Préparez vos entretiens.
-
-</p>
-
-</div>
-
-
-
-
-</section>
-
-
-
-</main>
-
-
 
 
 </div>
 
 
 
-);
+<button
 
+onClick={()=>navigate("/profile")}
+
+>
+
+Voir mon profil
+
+</button>
+
+
+</div>
+
+
+</div>
+
+)
 
 }
